@@ -1,52 +1,42 @@
 <?php
-header('Content-Type: text/plain');
+require_once 'connection.php';
+require_once 'jsonconverter.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Ambil data dari POST
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-
-    // Koneksi ke database
-    $host = 'metro.proxy.rlwy.net';
-    $port = 21860;
-    $db = 'railway';
-    $db_user = 'root'; 
-    $db_pass = 'TCGIVbDfxlkBQsDKNISxwRQTTIiaDzeW';     
-
-    $conn = new mysqli($host, $db_user, $db_pass, $db, $port);
-
-    if ($conn->connect_error) {
-        echo 'db_error';
-        exit;
-    }
-
-    // Cegah SQL Injection (gunakan prepared statement)
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
-    $stmt->bind_param("ss", $username, $password); // gunakan hash untuk produksi
-
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $response = [
-            "status" => true,
-            "token" => bin2hex(random_bytes(16)), // contoh token random
-            "message" => "Login berhasil"
-        ];
-    } else {
-        $response = [
-            "status" => false,
-            "message" => "Username atau password salah"
-        ];
-    }
-    echo json_encode($response);
-    $stmt->close();
-    $conn->close();
-} else {
-    $response = [
-            "success" => false,
-            "message" => "invalid_request"
-        ];
-     echo json_encode($response);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    send_json(["status" => false, "message" => "invalid_request"]);
 }
+
+$username = $_POST['username'] ?? '';
+$password = $_POST['password'] ?? '';
+
+if (empty($username) || empty($password)) {
+    send_json(["status" => false, "message" => "username_or_password_missing"]);
+}
+
+$db = new Database();
+$conn = $db->conn;
+
+// Gunakan prepared statement
+$query = "SELECT * FROM users WHERE username = ? AND password = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("ss", $username, $password); // sebaiknya password sudah di-hash
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    send_json([
+        "status" => true,
+        "token" => bin2hex(random_bytes(16)),
+        "message" => "Login berhasil"
+    ]);
+} else {
+    send_json([
+        "status" => false,
+        "message" => "Username atau password salah"
+    ]);
+}
+
+$stmt->close();
+$conn->close();
 ?>

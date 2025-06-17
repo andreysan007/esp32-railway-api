@@ -1,3 +1,3 @@
 <?php
-echo "Halo, Railway dengan Docker dan PHP!";
+echo "Halo, INI ACCESS CONTROL DARI SMART";
 ?>
