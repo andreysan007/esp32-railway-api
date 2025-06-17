@@ -13,5 +13,8 @@ RUN a2enmod rewrite
 # Railway otomatis expose port 8080, jadi kita expose juga port 8080 di container
 EXPOSE 8080
 
+# install mysqli
+RUN docker-php-ext-install mysqli
+
 # Jalankan Apache di foreground, tapi dengan port 8080
 CMD ["apache2-foreground"]
