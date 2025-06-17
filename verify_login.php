@@ -44,12 +44,20 @@ if ($result->num_rows > 0) {
     }
     else{
 
-        $query = "Insert INTO LogDevices(IP_AP,username,remark,action) VALUES(?,?,'Menunggu Approve dari pemilik device','N')";
+        $query = "SELECT * FROM LogDevices WHERE IP_AP = ? AND username = ? AND remark = 'Menunggu Approve dari pemilik device'";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ss", $deviceIp, $username); 
 
         $stmt->execute();
+        $result = $stmt->get_result();
 
+        if ($result->num_rows == 0) {
+            $query = "Insert INTO LogDevices(IP_AP,username,remark,action) VALUES(?,?,'Menunggu Approve dari pemilik device','N')";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ss", $deviceIp, $username); 
+
+            $stmt->execute();
+        }
         send_json([
             "status" => true,
             "approve" => false,
