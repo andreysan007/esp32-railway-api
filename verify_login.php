@@ -7,12 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'] ?? '';
 
     // Koneksi ke database
-    $host = 'localhost';
-    $db = 'if0_39243329_smartdb';
-    $db_user = 'if0_39243329'; 
-    $db_pass = 'SmArTCoNtRoL123';     
+    $host = 'metro.proxy.rlwy.net';
+    $port = 21860;
+    $db = 'railway';
+    $db_user = 'root'; 
+    $db_pass = 'TCGIVbDfxlkBQsDKNISxwRQTTIiaDzeW';     
 
-    $conn = new mysqli($host, $db_user, $db_pass, $db);
+    $conn = new mysqli($host, $db_user, $db_pass, $db, $port);
 
     if ($conn->connect_error) {
         echo 'db_error';
