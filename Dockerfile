@@ -10,5 +10,3 @@ WORKDIR /usr/src/myapp
 # Expose port 8080 untuk Railway
 EXPOSE 8080
 
-# Jalankan built-in PHP server
-CMD ["php", "-S", "0.0.0.0:8080", "index.php"]
