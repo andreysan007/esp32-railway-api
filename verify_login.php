@@ -29,13 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($result->num_rows > 0) {
         $response = [
-            "success" => true,
+            "status" => true,
             "token" => bin2hex(random_bytes(16)), // contoh token random
             "message" => "Login berhasil"
         ];
     } else {
         $response = [
-            "success" => false,
+            "status" => false,
             "message" => "Username atau password salah"
         ];
     }
