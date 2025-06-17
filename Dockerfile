@@ -1,8 +1,4 @@
-# Gunakan image PHP bawaan
-FROM php:8.1-apache
-
-# Salin semua file project ke dalam container
-COPY . /var/www/html/
-
-# Expose port default Apache
-EXPOSE 80
+FROM php:8.1-cli
+COPY . /app
+WORKDIR /app
+CMD php -S 0.0.0.0:${PORT:-8080} -t .
