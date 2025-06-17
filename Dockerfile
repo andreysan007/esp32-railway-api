@@ -1,12 +1,17 @@
-# Gunakan image PHP bawaan dengan built-in web server
-FROM php:8.2-cli
+# Base image PHP + Apache
+FROM php:8.2-apache
 
-# Copy semua file ke dalam container
-COPY . /usr/src/myapp
+# Copy semua file project ke direktori web server
+COPY . /var/www/html/
 
-# Ganti direktori kerja ke dalam folder tersebut
-WORKDIR /usr/src/myapp
+# Set permission yang sesuai (opsional)
+RUN chown -R www-data:www-data /var/www/html
 
-# Expose port 8080 untuk Railway
+# Enable mod_rewrite bila diperlukan
+RUN a2enmod rewrite
+
+# Railway otomatis expose port 8080, jadi kita expose juga port 8080 di container
 EXPOSE 8080
 
+# Jalankan Apache di foreground, tapi dengan port 8080
+CMD ["apache2-foreground"]
